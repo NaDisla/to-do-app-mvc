@@ -1,0 +1,15 @@
+﻿@model TodoViewModel
+
+<div class="container mt-5">
+    <h1 class="text-center mb-5">Local Todo App</h1>
+    <form asp-action="Insert" id="form-action" method="post" autocomplete="off">
+        <div class="input-group mb-2">
+            <input asp-for="Todo.ID" type="hidden" id="task-id" />
+            <input asp-for="Todo.Name" class="form-control rounded fs-5" placeholder="Enter task" type="text" id="task" />
+            <button class="btn btn-outline-secondary" type="submit" id="btn-add" onclick="this.blur();">
+                <i class="fa-solid fa-circle-plus fs-4"></i>
+            </button>
+        </div>
+        <span class="text-danger d-none" id="msg-validation">A name is required</span>
+    </form>
+</div>
