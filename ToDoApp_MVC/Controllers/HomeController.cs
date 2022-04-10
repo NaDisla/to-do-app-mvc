@@ -15,10 +15,23 @@ namespace ToDoApp_MVC.Controllers
 
         public IActionResult Index()
         {
+            string dbPath = Path.Combine(Environment.CurrentDirectory, "db_todo.db");
+            if(!System.IO.File.Exists(dbPath))
+            {
+                SetTable();
+            }
             var todoListViewModel = GetAllTodos();
             return View(todoListViewModel);
             
         }
+
+        #region Set up table
+        public void SetTable()
+        {
+            query = $"CREATE TABLE Todo (ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, AddedDate TEXT)";
+            ManageData(query);
+        }
+        #endregion
 
         #region Get All Todos
         public TodoViewModel GetAllTodos()
