@@ -1,39 +1,51 @@
 ﻿@model TodoViewModel
-<div class="container mt-5">
-    @{
-        if (Model.TodoList == null || Model.TodoList.Count == 0)
-        {
-            <h4 class="text-center fw-bold">Your items will be below ⬇️. Let's start adding new item! 😉</h4>
-        }
-        else
-        {
-            <div class="shadow p-3 mb-5 bg-light rounded">
-                @{
-                    foreach (var todo in Model.TodoList)
-                    {
-                        <div class="border border-3 rounded mb-3 d-flex flex-row">
-                            <div class="d-flex flex-column bd-highlight py-3 flex-grow-1">
-                                <div class="ps-3 bd-highlight text-secondary d-none" id="id-task">@todo.ID</div>
-                                <div class="ps-3 bd-highlight fs-5" id="task-name">@todo.Name</div>
-                                <div class="ps-3 bd-highlight text-secondary" id="task-date">Added: @todo.AddedDate</div>
-
-                            </div>
-                            <div class="d-flex align-self-center flex-row bd-highlight btn-group me-3">
-                                <button class="p-2 bd-highlight btn btn-outline-success" onclick="this.blur();" id="btn-done">
-                                    <i class="fa-solid fa-circle-check fs-4" id="icon-done-undone"></i>
-                                </button>
-                                <button class="p-2 bd-highlight btn btn-outline-primary" onclick="this.blur();" id="btn-edit">
-                                    <i class="fa-solid fa-pen fs-4"></i>
-                                </button>
-                                <button class="p-2 bd-highlight btn btn-outline-danger" onclick="this.blur();" id="btn-delete">
-                                    <i class="fa-solid fa-trash fs-4"></i>
-                                </button>
-                            </div>
-                        </div>
-                    }
-                }
-            </div>
-            <button class="btn btn-outline-danger w-100 fs-4 fw-bold" id="btn-clear">Clear all</button>
-        }
+@{
+    if (Model == null)
+    {
+        <div class="container">
+            <span class="text-danger" id="msg-validation">A name is required</span>
+            <h4 class="text-center fw-bold mt-5">Your tasks will be below ⬇️. Let's start adding new task! 😉</h4>
+        </div>
     }
-</div>
+    else
+    {
+        <div class="container mt-5">
+            @{
+                if (Model.TodoList == null || Model.TodoList.Count == 0)
+                {
+                    <h4 class="text-center fw-bold">Your tasks will be below ⬇️. Let's start adding new task! 😉</h4>
+                }
+                else
+                {
+                    <div class="shadow p-3 mb-5 bg-light rounded">
+                        @{
+                            foreach (var todo in Model.TodoList)
+                            {
+                                <div class="border border-3 rounded mb-3 d-flex flex-row">
+                                    <div class="d-flex flex-column bd-highlight py-3 flex-grow-1">
+                                        <div class="ps-3 bd-highlight text-secondary d-none" id="id-task">@todo.ID</div>
+                                        <div class="ps-3 bd-highlight fs-5" id="task-name">@todo.Name</div>
+                                        <div class="ps-3 bd-highlight text-secondary" id="task-date">Added: @todo.AddedDate</div>
+
+                                    </div>
+                                    <div class="d-flex align-self-center flex-row bd-highlight btn-group me-3">
+                                        <button class="p-2 bd-highlight btn btn-outline-success" onclick="this.blur();" id="btn-done">
+                                            <i class="fa-solid fa-circle-check fs-4" id="icon-done-undone"></i>
+                                        </button>
+                                        <button class="p-2 bd-highlight btn btn-outline-primary" onclick="this.blur();" id="btn-edit">
+                                            <i class="fa-solid fa-pen fs-4"></i>
+                                        </button>
+                                        <button class="p-2 bd-highlight btn btn-outline-danger" onclick="this.blur();" id="btn-delete">
+                                            <i class="fa-solid fa-trash fs-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <button class="btn btn-outline-danger w-100 fs-4 fw-bold" id="btn-clear">Clear all</button>
+                }
+            }
+        </div>
+    }
+}

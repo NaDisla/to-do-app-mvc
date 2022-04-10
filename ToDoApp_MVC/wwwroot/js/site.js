@@ -10,14 +10,6 @@ let taskName = document.querySelectorAll("#task-name");
 let iconDoneUndone = document.querySelectorAll("#icon-done-undone");
 let idTask = document.querySelectorAll("#id-task");
 
-btnAdd.addEventListener('click', () => {
-    let taskValue = task.value;
-    console.log(taskValue);
-    if (taskValue === '') {
-        msgValidation.classList.remove('d-none');
-    }
-});
-
 for (let i = 0; i < btnDone.length; i++) {
     btnDone[i].addEventListener('click', () => {
         if (taskName[i].classList.contains('text-decoration-line-through')) {

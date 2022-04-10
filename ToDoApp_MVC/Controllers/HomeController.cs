@@ -8,7 +8,6 @@ namespace ToDoApp_MVC.Controllers
 {
     public class HomeController : Controller
     {
-        
         public HomeController()
         {
             
@@ -18,6 +17,7 @@ namespace ToDoApp_MVC.Controllers
         {
             var todoListViewModel = GetAllTodos();
             return View(todoListViewModel);
+            
         }
         internal TodoViewModel GetAllTodos()
         {
@@ -61,8 +61,8 @@ namespace ToDoApp_MVC.Controllers
         }
         public IActionResult Insert(Todo todo)
         {
-            //if(ModelState.IsValid)
-            //{
+            if (!string.IsNullOrEmpty(todo.Name))
+            {
                 using (SQLiteConnection conn = new SQLiteConnection("Data Source=db_todo.db"))
                 {
                     using (var tableCmd = conn.CreateCommand())
@@ -80,8 +80,8 @@ namespace ToDoApp_MVC.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            //}
-            //return RedirectToAction(nameof(Index));
+            }
+            return View(nameof(Index));
         }
         [HttpPost]
         public JsonResult Clear()
