@@ -1,4 +1,4 @@
-﻿
+﻿/**********************DOM**********************/
 let btnAdd = document.querySelector("#btn-add");
 let task = document.querySelector("#task");
 let msgValidation = document.querySelector("#msg-validation");
@@ -9,7 +9,9 @@ let btnClear = document.querySelector("#btn-clear");
 let taskName = document.querySelectorAll("#task-name");
 let iconDoneUndone = document.querySelectorAll("#icon-done-undone");
 let idTask = document.querySelectorAll("#id-task");
+/**********************END DOM**********************/
 
+/**********************BUTTON DONE/UNDONE**********************/
 for (let i = 0; i < btnDone.length; i++) {
     btnDone[i].addEventListener('click', () => {
         if (taskName[i].classList.contains('text-decoration-line-through')) {
@@ -24,7 +26,9 @@ for (let i = 0; i < btnDone.length; i++) {
         }
     });
 }
+/**********************END BUTTON DONE/UNDONE**********************/
 
+/**********************BUTTON EDIT**********************/
 for (let i = 0; i < btnEdit.length; i++) {
     btnEdit[i].addEventListener('click', () => {
         let idTaskGet = $(idTask[i]).text();
@@ -43,7 +47,9 @@ for (let i = 0; i < btnEdit.length; i++) {
         });
     })
 }
+/**********************END BUTTON EDIT**********************/
 
+/**********************BUTTON DELETE**********************/
 for (let i = 0; i < btnEdit.length; i++) {
     btnDelete[i].addEventListener('click', () => {
         let idTaskGet = $(idTask[i]).text();
@@ -59,7 +65,9 @@ for (let i = 0; i < btnEdit.length; i++) {
         });
     })
 }
+/**********************END BUTTON DELETE**********************/
 
+/**********************BUTTON CLEAR**********************/
 btnClear.addEventListener('click', () => {
     $.ajax({
         url: 'Home/Clear',
@@ -67,3 +75,4 @@ btnClear.addEventListener('click', () => {
         success: () => { window.location.reload(); }
     });
 });
+/**********************END BUTTON CLEAR**********************/

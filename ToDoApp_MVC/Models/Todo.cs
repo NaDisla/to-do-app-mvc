@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ToDoApp_MVC.Models
+﻿namespace ToDoApp_MVC.Models
 {
     public class Todo
     {

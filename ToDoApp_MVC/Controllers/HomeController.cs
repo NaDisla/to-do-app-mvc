@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Data.SQLite;
-using System.Diagnostics;
 using ToDoApp_MVC.Models;
 using ToDoApp_MVC.Models.ViewModels;
 
@@ -8,6 +7,7 @@ namespace ToDoApp_MVC.Controllers
 {
     public class HomeController : Controller
     {
+        string query = "";
         public HomeController()
         {
             
@@ -19,7 +19,9 @@ namespace ToDoApp_MVC.Controllers
             return View(todoListViewModel);
             
         }
-        internal TodoViewModel GetAllTodos()
+
+        #region Get All Todos
+        public TodoViewModel GetAllTodos()
         {
             List<Todo> todoList = new List<Todo>();
 
@@ -59,51 +61,41 @@ namespace ToDoApp_MVC.Controllers
                 };
             }
         }
+        #endregion
+
+        #region Insert
         public IActionResult Insert(Todo todo)
         {
             if (!string.IsNullOrEmpty(todo.Name))
             {
-                using (SQLiteConnection conn = new SQLiteConnection("Data Source=db_todo.db"))
-                {
-                    using (var tableCmd = conn.CreateCommand())
-                    {
-                        conn.Open();
-                        tableCmd.CommandText = $"INSERT INTO Todo (Name, AddedDate) VALUES ('{todo.Name}', '{DateTime.Now}')";
-                        try
-                        {
-                            tableCmd.ExecuteNonQuery();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-                    }
-                }
+                query = $"INSERT INTO Todo (Name, AddedDate) VALUES ('{todo.Name}', '{DateTime.Now}')";
+                ManageData(query);
                 return RedirectToAction(nameof(Index));
             }
             return View(nameof(Index));
         }
+        #endregion
+
+        #region Clear Todos
         [HttpPost]
         public JsonResult Clear()
         {
-            using (SQLiteConnection conn = new SQLiteConnection("Data Source=db_todo.db"))
-            {
-                using (var tableCmd = conn.CreateCommand())
-                {
-                    conn.Open();
-                    tableCmd.CommandText = $"DELETE FROM Todo";
-                    tableCmd.ExecuteNonQuery();
-                }
-            }
+            query = $"DELETE FROM Todo";
+            ManageData(query);
             return Json(new { });
         }
+        #endregion
+
+        #region Populate Form
         [HttpGet]
         public JsonResult PopulateForm(int id)
         {
             var todo = GetTaskById(id);
             return Json(todo);
         }
+        #endregion
 
+        #region Get Task By ID
         private Todo GetTaskById(int id)
         {
             Todo getTodo = new Todo();
@@ -115,9 +107,9 @@ namespace ToDoApp_MVC.Controllers
                     conn.Open();
                     tableCmd.CommandText = $"SELECT * FROM Todo WHERE ID = '{id}'";
 
-                    using(var table = tableCmd.ExecuteReader())
+                    using (var table = tableCmd.ExecuteReader())
                     {
-                        if(table.HasRows)
+                        if (table.HasRows)
                         {
                             table.Read();
                             getTodo.ID = table.GetInt32(0);
@@ -133,45 +125,40 @@ namespace ToDoApp_MVC.Controllers
             }
             return getTodo;
         }
+        #endregion
+
+        #region Update
         public IActionResult Update(Todo todo)
         {
-            using (SQLiteConnection conn = new SQLiteConnection("Data Source=db_todo.db"))
-            {
-                using (var tableCmd = conn.CreateCommand())
-                {
-                    conn.Open();
-                    tableCmd.CommandText = $"UPDATE Todo SET Name = '{todo.Name}', AddedDate = '{DateTime.Now}' WHERE ID = {todo.ID}";
-                    try
-                    {
-                        tableCmd.ExecuteNonQuery();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-            }
+            query = $"UPDATE Todo SET Name = '{todo.Name}', AddedDate = '{DateTime.Now}' WHERE ID = {todo.ID}";
+            ManageData(query);
             return RedirectToAction(nameof(Index));
         }
+        #endregion
+
+        #region Delete
         public IActionResult Delete(int id)
+        {
+            query = $"DELETE FROM Todo WHERE ID = '{id}'";
+            ManageData(query);
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
+
+        #region ManageData
+        public void ManageData(string query)
         {
             using (SQLiteConnection conn = new SQLiteConnection("Data Source=db_todo.db"))
             {
                 using (var tableCmd = conn.CreateCommand())
                 {
                     conn.Open();
-                    tableCmd.CommandText = $"DELETE FROM Todo WHERE ID = '{id}'";
-                    try
-                    {
-                        tableCmd.ExecuteNonQuery();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
+                    tableCmd.CommandText = query;
+                    tableCmd.ExecuteNonQuery();
                 }
             }
-            return RedirectToAction(nameof(Index));
         }
+        #endregion
+
     }
 }
