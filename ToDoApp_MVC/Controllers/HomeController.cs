@@ -2,6 +2,7 @@
 using System.Data.SQLite;
 using ToDoApp_MVC.Models;
 using ToDoApp_MVC.Models.ViewModels;
+using System.Web;
 
 namespace ToDoApp_MVC.Controllers
 {
@@ -16,25 +17,32 @@ namespace ToDoApp_MVC.Controllers
         public IActionResult Index()
         {
             string dbPath = Path.Combine(Environment.CurrentDirectory, "db_todo.db");
+            string userIp = GetIp();
             if(!System.IO.File.Exists(dbPath))
             {
                 SetTable();
             }
-            var todoListViewModel = GetAllTodos();
+            var todoListViewModel = GetAllTodos(userIp);
             return View(todoListViewModel);
             
+        }
+
+        public string GetIp()
+        {
+            string ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            return ip;
         }
 
         #region Set up table
         public void SetTable()
         {
-            query = $"CREATE TABLE Todo (ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, AddedDate TEXT)";
+            query = $"CREATE TABLE Todo (ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, AddedDate TEXT, UserIP TEXT)";
             ManageData(query);
         }
         #endregion
 
         #region Get All Todos
-        public TodoViewModel GetAllTodos()
+        public TodoViewModel GetAllTodos(string userIp)
         {
             List<Todo> todoList = new List<Todo>();
 
@@ -43,7 +51,7 @@ namespace ToDoApp_MVC.Controllers
                 using (var tableCmd = conn.CreateCommand())
                 {
                     conn.Open();
-                    tableCmd.CommandText = $"SELECT * FROM Todo";
+                    tableCmd.CommandText = $"SELECT * FROM Todo WHERE UserIP = '{userIp}'";
 
                     using (var reader = tableCmd.ExecuteReader())
                     {
@@ -81,7 +89,8 @@ namespace ToDoApp_MVC.Controllers
         {
             if (!string.IsNullOrEmpty(todo.Name))
             {
-                query = $"INSERT INTO Todo (Name, AddedDate) VALUES ('{todo.Name}', '{DateTime.Now}')";
+                string userIp = GetIp();
+                query = $"INSERT INTO Todo (Name, AddedDate, UserIP) VALUES ('{todo.Name}', '{DateTime.Now}','{userIp}')";
                 ManageData(query);
                 return RedirectToAction(nameof(Index));
             }
@@ -93,7 +102,7 @@ namespace ToDoApp_MVC.Controllers
         [HttpPost]
         public JsonResult Clear()
         {
-            query = $"DELETE FROM Todo";
+            query = $"DELETE FROM Todo WHERE UserIP = '{GetIp()}'";
             ManageData(query);
             return Json(new { });
         }
@@ -118,7 +127,7 @@ namespace ToDoApp_MVC.Controllers
                 using (var tableCmd = conn.CreateCommand())
                 {
                     conn.Open();
-                    tableCmd.CommandText = $"SELECT * FROM Todo WHERE ID = '{id}'";
+                    tableCmd.CommandText = $"SELECT * FROM Todo WHERE ID = '{id}' AND UserIP = '{GetIp()}'";
 
                     using (var table = tableCmd.ExecuteReader())
                     {
@@ -143,7 +152,7 @@ namespace ToDoApp_MVC.Controllers
         #region Update
         public IActionResult Update(Todo todo)
         {
-            query = $"UPDATE Todo SET Name = '{todo.Name}', AddedDate = '{DateTime.Now}' WHERE ID = {todo.ID}";
+            query = $"UPDATE Todo SET Name = '{todo.Name}', AddedDate = '{DateTime.Now}' WHERE ID = {todo.ID} AND UserIP = '{GetIp()}'";
             ManageData(query);
             return RedirectToAction(nameof(Index));
         }
@@ -152,7 +161,7 @@ namespace ToDoApp_MVC.Controllers
         #region Delete
         public IActionResult Delete(int id)
         {
-            query = $"DELETE FROM Todo WHERE ID = '{id}'";
+            query = $"DELETE FROM Todo WHERE ID = '{id}' AND UserIP = '{GetIp()}'";
             ManageData(query);
             return RedirectToAction(nameof(Index));
         }
