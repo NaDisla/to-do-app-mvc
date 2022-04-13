@@ -17,12 +17,11 @@ namespace ToDoApp_MVC.Controllers
         public IActionResult Index()
         {
             string dbPath = Path.Combine(Environment.CurrentDirectory, "db_todo.db");
-            string userIp = GetIp();
             if(!System.IO.File.Exists(dbPath))
             {
                 SetTable();
             }
-            var todoListViewModel = GetAllTodos(userIp);
+            var todoListViewModel = GetAllTodos(GetIp());
             return View(todoListViewModel);
             
         }
@@ -89,8 +88,7 @@ namespace ToDoApp_MVC.Controllers
         {
             if (!string.IsNullOrEmpty(todo.Name))
             {
-                string userIp = GetIp();
-                query = $"INSERT INTO Todo (Name, AddedDate, UserIP) VALUES ('{todo.Name}', '{DateTime.Now}','{userIp}')";
+                query = $"INSERT INTO Todo (Name, AddedDate, UserIP) VALUES ('{todo.Name}', '{DateTime.Now.ToLocalTime()}','{GetIp()}')";
                 ManageData(query);
                 return RedirectToAction(nameof(Index));
             }
