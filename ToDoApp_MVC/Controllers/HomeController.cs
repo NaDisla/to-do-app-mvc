@@ -88,7 +88,7 @@ namespace ToDoApp_MVC.Controllers
         {
             if (!string.IsNullOrEmpty(todo.Name))
             {
-                query = $"INSERT INTO Todo (Name, AddedDate, UserIP) VALUES ('{todo.Name}', '{DateTime.Now.ToLocalTime()}','{GetIp()}')";
+                query = $"INSERT INTO Todo (Name, AddedDate, UserIP) VALUES ('{todo.Name}', '{DateTime.Now.ToShortDateString()}','{GetIp()}')";
                 ManageData(query);
                 return RedirectToAction(nameof(Index));
             }
