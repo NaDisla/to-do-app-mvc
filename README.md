@@ -1,6 +1,6 @@
 # To Do App
 A simple and small app to annotate personal tasks. 📒
-http://to-do-app-nadisla.somee.com/
+https://ndtodoapp.azurewebsites.net/
 ### Technologies / Languages
 - ASP.NET Core 6 MVC
 - SQLite
